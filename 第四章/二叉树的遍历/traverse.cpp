@@ -34,5 +34,12 @@ int main()
     std::cout << "²ãĞò±éÀúµü´ú£º";
     LevelOrderTraversal(root);
 
+    std::cout << std::endl;
+    std::cout << "¶ş²æÊ÷Ò¶×Ó";
+    PreOrderPrintLeaves(root);
+
+    std::cout << std::endl;
+    std::cout << "¶ş²æÊ÷¸ß¶È:" << Height(root);
+
     return 0;
 }

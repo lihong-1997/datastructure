@@ -165,4 +165,34 @@ void LevelOrderTraversal(TreeNode<T>* root)
     }
 }
 
+//输出二叉树的叶子节点
+template <class T>
+void PreOrderPrintLeaves(TreeNode<T>* root)
+{
+    if (root)
+    {
+        if (!root->left && !root->right)
+			std::cout << root->val << " ";
+        PreOrderPrintLeaves(root->left);
+        PreOrderPrintLeaves(root->right);
+    }
+}
+
+//输出二叉树高度
+template <class T>
+int Height(TreeNode<T>* root)
+{
+    int HL, HR, MaxH;
+    if (root)
+    {
+        HL = Height(root->left);
+        HR = Height(root->right);
+        MaxH = (HL > HR) ? HL : HR;
+        return 1 + MaxH;
+    }
+    else
+        return 0;
+}
+
+
 #endif

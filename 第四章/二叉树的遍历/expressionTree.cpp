@@ -41,16 +41,16 @@ TreeNode<char>* expressionTree(const char* A, int N)
 }
 
 /*
- * 后缀转中缀得添括号
+ * 通过中序遍历树，并添加括号，使得后缀表达式转中缀表达式
  */
-void InOrderTraversal_withPar(TreeNode<char>* root, std::string& res )
+void TreeToInfix(TreeNode<char>* root, std::string& res )
 {
 	if (root)
 	{
 		if (root->left) res.push_back('(');
-		InOrderTraversal_withPar(root->left, res);
+		TreeToInfix(root->left, res);
 		res.push_back(root->val);
-		InOrderTraversal_withPar(root->right, res);
+		TreeToInfix(root->right, res);
 		if (root->right) res.push_back(')');
 	}
 
@@ -62,11 +62,13 @@ std::string PostToInfix(TreeNode<char>* root, const std::string& post)
 {
 	std::string res;
 
-	InOrderTraversal_withPar(root, res);
+	TreeToInfix(root, res);
 
 	return res;
 }
 
+
+//递归计算表达式树的值
 int calculate_expressionTree(const TreeNode<char>* root)
 {
 	//若为树叶，则将其转化为整数类型，并返回
