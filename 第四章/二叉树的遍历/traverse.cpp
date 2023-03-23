@@ -1,6 +1,6 @@
 #include "binarytree.h"
 
-int main2()
+int main()
 {
     TreeNode<char>* root = new TreeNode<char>('A');
     root->left = new TreeNode<char>('B');
@@ -29,6 +29,10 @@ int main2()
     PostOrderTraversal(root);
     std::cout << "ºóÐò±éÀúµÝ¹é£º";
     PostOrderTraversal_Recursion(root);
+
+    std::cout << std::endl;
+    std::cout << "²ãÐò±éÀúµü´ú£º";
+    LevelOrderTraversal(root);
 
     return 0;
 }

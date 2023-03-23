@@ -91,7 +91,7 @@ int calculate_expressionTree(const TreeNode<char>* root)
 	}
 }
 
-int main()
+int main2()
 {
 	std::string postEx("123*+45*3+2*+"); //53
 	TreeNode<char>* root = expressionTree(postEx.data(), (int)postEx.size());
@@ -103,4 +103,6 @@ int main()
 
 	int value = calculate_expressionTree(root);
 	std::cout << "\n" << "expression value:" << value;
+
+	return 0;
 }

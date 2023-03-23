@@ -2,6 +2,7 @@
 #define BINARYTREE_H
 
 #include <stack>
+#include <queue>
 #include <iostream>
 
 template <class T>
@@ -126,7 +127,7 @@ template <class T>
 void PostOrderTraversal(TreeNode<T>* root) {
     if (!root) return;
 
-    std::stack<TreeNode<T>*> s1, s2;
+    std::stack<TreeNode<T>* > s1, s2;
     s1.push(root);
 
     while (!s1.empty()) {
@@ -142,6 +143,26 @@ void PostOrderTraversal(TreeNode<T>* root) {
         std::cout << node->val << " ";
     }
     std::cout << std::endl;
+}
+
+//²ãÐò±éÀú
+template <class T>
+void LevelOrderTraversal(TreeNode<T>* root)
+{
+    if (!root) return;
+
+    std::queue<TreeNode<T>* > Q;
+    TreeNode<T>* tNode = root;
+    Q.push(tNode);
+
+    while (!Q.empty())
+    {
+        tNode = Q.front();
+        std::cout << tNode->val << " ";
+        Q.pop();
+        if (tNode->left) Q.push(tNode->left);
+        if (tNode->right) Q.push(tNode->right);
+    }
 }
 
 #endif
