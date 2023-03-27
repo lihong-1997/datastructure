@@ -24,6 +24,12 @@ static int Height(Position P)
 		return P->Height;
 }
 
+int getBalance(AvlTree T) {
+	if (T == NULL)
+		return -1;
+	return Height(T->Left) - Height(T->Right);
+}
+
 static Position SingleRotateWithLeft(Position k2) //LL
 {
 	Position k1;
@@ -125,28 +131,28 @@ AvlTree Insert(ElementType X, AvlTree T)
 			T->Height = 0;
 		}
 	}
-	else if (X < T->element)
+	else if (X < T->element) //x在T的左子树中
 	{
 		T->Left = Insert(X, T->Left);
-		if (Height(T->Left) - Height(T->Right) == 2)
+		if (Height(T->Left) - Height(T->Right) == 2) //发现者T的高度为2，进行旋转
 		{
-			//进行旋转
-			if (X < T->Left->element) //通过值判断麻烦节点在发现者左子树的左子树中或是右子树中
+			//通过值判断麻烦节点在发现者左子树的左子树中或是右子树中
+			if (X < T->Left->element) //单旋LL
 				T = SingleRotateWithLeft(T);
 			else
-				T = DoubleRotateWithLeft(T);
+				T = DoubleRotateWithLeft(T); //双旋LR
 		}
 	}
-	else if (X > T->element)
+	else if (X > T->element) //x在T的右子树中
 	{
 		T->Right = Insert(X, T->Right);
 		if (Height(T->Right) - Height(T->Left) == 2)
 		{
-			//进行旋转
-			if (X > T->Right->element) //通过值判断麻烦节点在发现者右子树的左子树中或是右子树中
+			//通过值判断麻烦节点在发现者右子树的左子树中或是右子树中
+			if (X > T->Right->element) //单旋RR
 				T = SingleRotateWithRight(T);
 			else
-				T = DoubleRotateWithRight(T);
+				T = DoubleRotateWithRight(T); //双旋RL
 		}
 	}
 
@@ -154,6 +160,150 @@ AvlTree Insert(ElementType X, AvlTree T)
 	T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
 
 	return T;
+}
+
+AvlTree Delete(ElementType X, AvlTree T)
+{
+	if (T == NULL)
+	{
+		printf("element not found");
+		return NULL;
+	}
+	Position tmp;
+
+	if (X < T->element) //x在T的左子树中
+	{
+		T->Left = Delete(X, T->Left); //进行递归删除，递归中完成节点高度重新测算
+		//更新树高度
+		T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
+		if (Height(T->Right) - Height(T->Left) == 2) //发现者T的高度为2，进行旋转
+		{
+			if (Height(T->Right->Right) > Height(T->Right->Left)) //判断单旋双旋的条件
+				T = SingleRotateWithRight(T); //右单旋RR
+			else
+				T = DoubleRotateWithRight(T); //右双旋RL
+		}
+	}
+		
+	else if (X > T->element) //x在T的右子树中
+	{
+		T->Right = Delete(X, T->Right);
+		//更新树高度
+		T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
+		if (Height(T->Left) - Height(T->Right) == 2) //发现者T的高度为2，进行旋转
+		{
+			//tmp = T->Left;
+			if (Height(T->Left->Left) > Height(T->Left->Right))
+				T = SingleRotateWithLeft(T); //左单旋LL
+			else
+				T = DoubleRotateWithLeft(T); //左双旋LR
+		}
+	}
+		
+	else
+	{
+		if (T->Left && T->Right)
+		{
+			tmp = FindMin(T->Right);
+			T->element = tmp->element;
+			T->Right = Delete(tmp->element, T->Right);
+
+			T->Height = Max(Height(T->Left), Height(T->Right)) + 1;
+		}
+		else
+		{
+			tmp = T;
+			if (T->Left == NULL)
+				T = T->Right;
+			else if(T->Right == NULL)
+				T = T->Left;
+			free(tmp);
+		}
+	}
+
+	return T;
+}
+static Position rightRotate(Position y) {
+	Position x = y->Left;
+	Position T2 = x->Right;
+
+	x->Right = y;
+	y->Left = T2;
+
+	y->Height = Max(Height(y->Left), Height(y->Right)) + 1;
+	x->Height = Max(Height(x->Left), Height(x->Right)) + 1;
+
+	return x;
+}
+
+static Position leftRotate(Position x) {
+	Position y = x->Right;
+	Position T2 = y->Left;
+
+	y->Left = x;
+	x->Right = T2;
+
+	x->Height = Max(Height(x->Left), Height(x->Right)) + 1;
+	y->Height = Max(Height(y->Left), Height(y->Right)) + 1;
+
+	return y;
+}
+
+AvlTree deleteNode(AvlTree root, ElementType X)
+{
+	if (root == NULL)
+		return root;
+
+	if (X < root->element)
+		root->Left = deleteNode(root->Left, X);
+
+	else if (X > root->element)
+		root->Right = deleteNode(root->Right, X);
+
+	else {
+		if ((root->Left == NULL) || (root->Right == NULL)) {
+			Position temp = root->Left ? root->Left : root->Right;
+
+			if (temp == NULL) {
+				temp = root;
+				root = NULL;
+			}
+			else
+				*root = *temp;
+			free(temp);
+		}
+		else {
+			Position temp = FindMin(root->Right);
+			root->element = temp->element;
+			root->Right = deleteNode(root->Right, temp->element);
+		}
+	}
+
+	if (root == NULL)
+		return root;
+
+	root->Height = 1 + max(Height(root->Left),
+		Height(root->Right));
+
+	int balance = getBalance(root);
+
+	if (balance > 1 && getBalance(root->Left) >= 0)
+		return rightRotate(root);
+
+	if (balance > 1 && getBalance(root->Left) < 0) {
+		root->Left = leftRotate(root->Left);
+		return rightRotate(root);
+	}
+
+	if (balance < -1 && getBalance(root->Right) <= 0)
+		return leftRotate(root);
+
+	if (balance < -1 && getBalance(root->Right) > 0) {
+		root->Right = rightRotate(root->Right);
+		return leftRotate(root);
+	}
+
+	return root;
 }
 
 ElementType Retrieve(Position P)

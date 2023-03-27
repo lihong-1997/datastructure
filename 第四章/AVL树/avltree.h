@@ -12,6 +12,8 @@ Position FindMin(AvlTree T);
 Position FindMax(AvlTree T);
 AvlTree Insert(ElementType X, AvlTree T);
 AvlTree Delete(ElementType X, AvlTree T);
+AvlTree deleteNode(AvlTree root, ElementType X);
+
 ElementType Retrieve(Position P);
 void PreOrderTraversal(AvlTree T);
 

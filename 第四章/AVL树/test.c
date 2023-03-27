@@ -14,7 +14,15 @@ int main()
 	{
 		T = Insert(arr[i], T);
 	}
-	PreOrderTraversal(T);
+	//PreOrderTraversal(T);
 
+	//Delete(4, T); //5213768
+	//Delete(1, T); //5324768
+	//Delete(2, T); //5314768
+	deleteNode(T, 5);
+	deleteNode(T, 8);
+	//PreOrderTraversal(T);
+	//Delete(8, T);
+	PreOrderTraversal(T);
 	return 0;
 }
